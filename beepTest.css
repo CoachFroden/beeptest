@@ -132,6 +132,20 @@ button:hover {
   background: #353d48;
 }
 
+button.danger {
+  background: linear-gradient(135deg, #ff4d4d, #d93636);
+  color: #fff;
+  font-weight: 700;
+}
+
+button.danger:hover {
+  background: linear-gradient(135deg, #ff6666, #e64545);
+}
+
+button.danger:active {
+  transform: scale(0.97);
+}
+
 /* ---------- STATUS MESSAGE ---------- */
 #statusMessage {
   position: fixed;

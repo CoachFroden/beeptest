@@ -1,6 +1,32 @@
 /* =========================
    BEEP TEST – STABIL MOTOR
    ========================= */
+   
+   import { initializeApp } from
+  "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  orderBy
+} from
+  "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAKZMu2HZPmmoZ1fFT7DNA9Q6ystbKEPgE",
+  authDomain: "samnanger-g14-f10a1.firebaseapp.com",
+  projectId: "samnanger-g14-f10a1",
+  storageBucket: "samnanger-g14-f10a1.firebasestorage.app",
+  messagingSenderId: "926427862844",
+  appId: "1:926427862844:web:5e6d11bb689c802d01b039",
+  measurementId: "G-EJL3YYC63R"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 
 /* ---------- DELTAKERE ---------- */
 const participantNames = [
@@ -23,14 +49,6 @@ const participantNames = [
   "Torvald",
   "William"
 ];
-
-import {
-  collection,
-  addDoc,
-  getDocs,
-  query,
-  orderBy
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 /* ---------- DATA ---------- */
 const beepLevels = [
@@ -485,6 +503,64 @@ confirmAddParticipant?.addEventListener("click", () => {
   addParticipantModal.classList.add("hidden");
   showStatus(`${name} lagt til`);
 });
+
+const manualResultBtn = document.getElementById("manualResultBtn");
+const manualResultModal = document.getElementById("manualResultModal");
+
+const manualName = document.getElementById("manualName");
+const manualDate = document.getElementById("manualDate");
+const manualLevel = document.getElementById("manualLevel");
+
+const saveManualResult = document.getElementById("saveManualResult");
+const cancelManualResult = document.getElementById("cancelManualResult");
+
+// Åpne modal
+manualResultBtn.addEventListener("click", () => {
+  manualName.value = "";
+  manualLevel.value = "";
+  manualDate.value = new Date().toISOString().slice(0, 10);
+
+  manualResultModal.classList.remove("hidden");
+});
+
+// Avbryt
+cancelManualResult.addEventListener("click", () => {
+  manualResultModal.classList.add("hidden");
+});
+
+// Lagre
+saveManualResult.addEventListener("click", async () => {
+  const name = manualName.value.trim();
+  const date = manualDate.value;
+  const result = manualLevel.value.trim();
+
+  if (!name || !date || !/^\d+(\.\d+)?$/.test(result)) {
+    showStatus("Fyll inn gyldig navn, dato og nivå (x.x)");
+    return;
+  }
+
+  const [level, shuttle] = result.split(".");
+
+  const docData = {
+    name,
+    date,
+    result,
+    level: Number(level),
+    shuttle: Number(shuttle || 0),
+    time: "Manuell",
+    timestamp: new Date(date).getTime()
+  };
+
+  try {
+    await addDoc(collection(db, "beeptestResults"), docData);
+    showStatus("Manuelt resultat lagret");
+    manualResultModal.classList.add("hidden");
+  } catch (err) {
+    console.error(err);
+    showStatus("Kunne ikke lagre manuelt resultat");
+  }
+});
+
 
 /* ---------- FIREBASE: SEND RESULTATER ---------- */
 document
