@@ -279,3 +279,18 @@ body {
     opacity: 0.8;
   }
 }
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+}
+
+.result-name {
+  text-align: left;
+}
+
+.result-value {
+  text-align: right;
+  min-width: 50px;
+  font-variant-numeric: tabular-nums;
+}

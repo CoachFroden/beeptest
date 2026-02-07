@@ -648,7 +648,18 @@ function showResultsForDate(date, results) {
     .sort((a, b) => a.name.localeCompare(b.name))
     .forEach(r => {
       const row = document.createElement("div");
-      row.textContent = `${r.name} – ${r.result}`;
+      row.className = "result-row";
+
+      const name = document.createElement("span");
+      name.className = "result-name";
+      name.textContent = r.name;
+
+      const value = document.createElement("span");
+      value.className = "result-value";
+      value.textContent = r.result;
+
+      row.appendChild(name);
+      row.appendChild(value);
       container.appendChild(row);
     });
 }
